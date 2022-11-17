@@ -11,7 +11,7 @@ SO THAT I can organize my thoughts and keep track of tasks I need to complete
 
 
 ## Usage
- [Website](https://glacial-badlands-74609.herokuapp.com/notes)
+ [Website](https://glacial-badlands-74609.herokuapp.com)
 
 ![Screenshot](./public/assets/img/Screen%20Shot%202022-11-17%20at%2012.11.03%20AM.png)
 
