@@ -6,7 +6,7 @@ const uuid = require('./helpers/uuid');
 const { readFromFile, writeToFile, readAndAppend } = require('./helpers/fsUtils')
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 
 app.use(express.static('public'));
@@ -59,6 +59,24 @@ app.post('/api/notes', (req, res) => {
 
 });
 
+app.delete('/api/notes/:id', (req, res) => {
+    let noteList = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+    let noteId = (req.params.id).toString();
+
+  
+    noteList = noteList.filter(selected =>{
+        return selected.id != noteId;
+    })
+
+    
+    fs.writeFileSync("./db/db.json", JSON.stringify(noteList));
+    res.json(noteList);
+  
+});
+    
+
+
+    
 app.listen(PORT, () =>
     console.log(`App listening at http://localhost:${PORT} 🚀`)
 );
