@@ -1,6 +1,5 @@
 const express = require('express');
 const fs = require('fs');
-const { request } = require('http');
 const path = require('path');
 const notesData = require('./db/db.json');
 const uuid = require('./helpers/uuid');
@@ -27,7 +26,9 @@ app.get('/notes', (req, res) =>
 );
 
 //GET api route for db.json
-app.get('/api/notes', (req, res) => res.json(notesData));
+app.get('/api/notes', (req, res) => 
+readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)))
+);
 
 app.post('/api/notes', (req, res) => {
     // Inform the client that their POST request was received
@@ -35,7 +36,7 @@ app.post('/api/notes', (req, res) => {
 
     const { title, text } = req.body;
 
-    if (title && text) {
+    if (req.body) {
         const newNote = {
             title,
             text,
