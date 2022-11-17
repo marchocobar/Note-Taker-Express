@@ -1,9 +1,10 @@
 const express = require('express');
-const { fstat } = require('fs');
+const fs = require('fs');
 const { request } = require('http');
 const path = require('path');
 const notesData = require('./db/db.json');
-const uuid = require('./helpers/uuid')
+const uuid = require('./helpers/uuid');
+const { readFromFile, writeToFile, readAndAppend } = require('./helpers/fsUtils')
 
 const app = express();
 const PORT = 3001;
@@ -38,40 +39,10 @@ app.post('/api/notes', (req, res) => {
         const newNote = {
             title,
             text,
-            notes_id: uuid(),
+            id: uuid(),
         };
+        readAndAppend(newNote, './db/db.json');
 
-        fs.readFile('./db/db.json', 'utf8', (err, data) => {
-            if (err) {
-              console.error(err);
-            } else {
-              // Convert string into JSON object
-              const parsedNotes = JSON.parse(data);
-      
-              // Add a new review
-              parsedNotes.push(newNote);
-      
-              // Write updated reviews back to the file
-              fs.writeFile(
-                './db/db.json',
-                JSON.stringify(parsedNotes),
-                (writeErr) =>
-                  writeErr
-                    ? console.error(writeErr)
-                    : console.info('Successfully updated reviews!')
-              );
-            }
-          });
-
-        // const noteString = JSON.stringify(newNote);
-
-        // fs.writeFile('./db/db.json', noteString, (err) =>
-        //     err
-        //         ? console.error(err)
-        //         : console.log(
-        //             `Note has been written to JSON file`
-        //         )
-        // );
         
         const response = {
             status: 'success',
