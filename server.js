@@ -41,35 +41,50 @@ app.post('/api/notes', (req, res) => {
             notes_id: uuid(),
         };
 
-        const noteString = JSON.stringify(newNote);
+        fs.readFile('./db/db.json', 'utf8', (err, data) => {
+            if (err) {
+              console.error(err);
+            } else {
+              // Convert string into JSON object
+              const parsedNotes = JSON.parse(data);
+      
+              // Add a new review
+              parsedNotes.push(newNote);
+      
+              // Write updated reviews back to the file
+              fs.writeFile(
+                './db/db.json',
+                JSON.stringify(parsedNotes),
+                (writeErr) =>
+                  writeErr
+                    ? console.error(writeErr)
+                    : console.info('Successfully updated reviews!')
+              );
+            }
+          });
 
-        fs.writeFile('./db/db.json', noteString, (err) =>
-            err
-                ? console.error(err)
-                : console.log(
-                    `Note has been written to JSON file`
-                )
-        );
+        // const noteString = JSON.stringify(newNote);
+
+        // fs.writeFile('./db/db.json', noteString, (err) =>
+        //     err
+        //         ? console.error(err)
+        //         : console.log(
+        //             `Note has been written to JSON file`
+        //         )
+        // );
         
         const response = {
             status: 'success',
-            body: newReview,
+            body: newNote,
           };
       
           console.log(response);
           res.status(201).json(response);
         } else {
-          res.status(500).json('Error in posting review');
+          res.status(500).json('Error in posting note');
         }
 
-    //     readAndAppend(newNote, './db/db.json');
-    //     res.json(`Note added successfully 🚀`);
-    // } else {
-    //     res.error('Error in adding note');
-    // }
 
-    // // Log our request to the terminal
-    // console.info(`${req.method} request received to add a note`);
 });
 
 app.listen(PORT, () =>
